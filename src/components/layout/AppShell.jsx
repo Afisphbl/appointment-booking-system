@@ -11,7 +11,6 @@ import {
   Stethoscope,
 } from "lucide-react";
 import { createElement } from "react";
-import { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import {
   Link,
