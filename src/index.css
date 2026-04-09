@@ -1,4 +1,4 @@
-@import url("https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Manrope:wght@500;600;700;800&display=swap");
+@import "https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Manrope:wght@500;600;700;800&display=swap";
 @import "tailwindcss";
 
 :root {
@@ -32,7 +32,7 @@ body,
 
 body {
   margin: 0;
-  font-family: "Inter", sans-serif;
+  font-family: Inter, sans-serif;
   color: var(--on-surface);
   background-color: var(--surface-lowest);
   background-image:
@@ -47,7 +47,7 @@ body {
       rgba(180, 197, 255, 0) 26%
     ),
     linear-gradient(180deg, var(--surface) 0%, var(--surface-lowest) 100%);
-  text-rendering: optimizeLegibility;
+  text-rendering: optimizelegibility;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
@@ -58,7 +58,7 @@ a {
 }
 
 .headline-font {
-  font-family: "Manrope", sans-serif;
+  font-family: Manrope, sans-serif;
 }
 
 .app-card {

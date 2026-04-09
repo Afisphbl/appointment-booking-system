@@ -107,22 +107,19 @@ function Login() {
           </label>
 
           {/* Hidden role field — controlled by tab buttons */}
-          <label
-            className="block text-sm text-text-muted"
-            htmlFor="role-display"
-          >
+          <div className="block text-sm text-text-muted">
             Access Role
             <span className="mt-2 flex items-center gap-2 rounded-xl border border-white/15 bg-black/20 px-3 py-2.5">
               <Lock size={16} className="shrink-0 text-blue-100" />
               <span
-                id="role-display"
+                aria-live="polite"
                 className="inline-flex items-center gap-2 text-sm font-medium text-white"
               >
                 <RoleIcon size={14} />
                 {cfg.label}
               </span>
             </span>
-          </label>
+          </div>
 
           <button
             type="submit"
