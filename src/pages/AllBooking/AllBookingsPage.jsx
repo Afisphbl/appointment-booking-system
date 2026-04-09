@@ -20,6 +20,7 @@ export default function AllBookingsPage() {
   const query = useSelector((state) => state.data.filters.query);
   const statusFilter = useSelector((state) => state.data.filters.status);
   const [page, setPage] = useState(1);
+  const [updatingIds, setUpdatingIds] = useState(() => new Set());
 
   const totalPages = Math.max(1, Math.ceil(bookings.length / PAGE_SIZE));
   // Reset to page 1 if filter changes shrink the list
@@ -40,7 +41,21 @@ export default function AllBookingsPage() {
   };
 
   const changeStatus = async (id, status) => {
-    await dispatch(updateBookingStatus({ id, status }));
+    setUpdatingIds((previous) => {
+      const next = new Set(previous);
+      next.add(id);
+      return next;
+    });
+
+    try {
+      await dispatch(updateBookingStatus({ id, status })).unwrap();
+    } finally {
+      setUpdatingIds((previous) => {
+        const next = new Set(previous);
+        next.delete(id);
+        return next;
+      });
+    }
   };
 
   return (
@@ -60,12 +75,14 @@ export default function AllBookingsPage() {
           <div className="flex w-full flex-col gap-2 sm:flex-row lg:w-auto">
             {/* Search */}
             <label className="relative block w-full sm:w-64">
+              <span className="sr-only">Search bookings</span>
               <Search
                 size={14}
                 className="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 text-[var(--on-surface-muted)]"
               />
               <input
                 type="text"
+                aria-label="Search bookings"
                 value={query}
                 onChange={(e) => handleQuery(e.target.value)}
                 placeholder="Search patient, doctor, service…"
@@ -75,6 +92,7 @@ export default function AllBookingsPage() {
 
             {/* Status filter */}
             <select
+              aria-label="Filter bookings by status"
               value={statusFilter}
               onChange={(e) => handleStatus(e.target.value)}
               className="field-select"
@@ -130,16 +148,19 @@ export default function AllBookingsPage() {
                       <ActionBtn
                         color="blue"
                         label="Confirm"
+                        disabled={updatingIds.has(booking.id)}
                         onClick={() => changeStatus(booking.id, "confirmed")}
                       />
                       <ActionBtn
                         color="emerald"
                         label="Complete"
+                        disabled={updatingIds.has(booking.id)}
                         onClick={() => changeStatus(booking.id, "completed")}
                       />
                       <ActionBtn
                         color="rose"
                         label="Cancel"
+                        disabled={updatingIds.has(booking.id)}
                         onClick={() => changeStatus(booking.id, "cancelled")}
                       />
                     </div>
@@ -178,16 +199,19 @@ export default function AllBookingsPage() {
                 <ActionBtn
                   color="blue"
                   label="Confirm"
+                  disabled={updatingIds.has(booking.id)}
                   onClick={() => changeStatus(booking.id, "confirmed")}
                 />
                 <ActionBtn
                   color="emerald"
                   label="Complete"
+                  disabled={updatingIds.has(booking.id)}
                   onClick={() => changeStatus(booking.id, "completed")}
                 />
                 <ActionBtn
                   color="rose"
                   label="Cancel"
+                  disabled={updatingIds.has(booking.id)}
                   onClick={() => changeStatus(booking.id, "cancelled")}
                 />
               </div>
@@ -220,7 +244,7 @@ export default function AllBookingsPage() {
   );
 }
 
-function ActionBtn({ color, label, onClick }) {
+function ActionBtn({ color, label, onClick, disabled = false }) {
   const colors = {
     blue: "border-blue-300/30 bg-blue-500/15 text-blue-100 hover:bg-blue-500/30",
     emerald:
@@ -231,7 +255,8 @@ function ActionBtn({ color, label, onClick }) {
     <button
       type="button"
       onClick={onClick}
-      className={`rounded-md border px-2.5 py-1 text-xs font-semibold transition ${colors[color]}`}
+      disabled={disabled}
+      className={`rounded-md border px-2.5 py-1 text-xs font-semibold transition disabled:cursor-not-allowed disabled:opacity-60 ${colors[color]}`}
     >
       {label}
     </button>

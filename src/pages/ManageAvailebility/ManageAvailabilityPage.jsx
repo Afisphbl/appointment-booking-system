@@ -7,15 +7,18 @@ export default function ManageAvailabilityPage() {
   const dispatch = useDispatch();
   const availability = useSelector((state) => state.data.availability);
   const staff = useSelector((state) => state.data.staff);
-  const [updatingId, setUpdatingId] = useState(null);
-
+  const [updatingIds, setUpdatingIds] = useState(() => new Set());
   const staffById = Object.fromEntries(
     staff.map((member) => [member.id, member]),
   );
   const availableCount = availability.filter((slot) => slot.isAvailable).length;
 
   const toggleAvailability = async (slot) => {
-    setUpdatingId(slot.id);
+    setUpdatingIds((previous) => {
+      const next = new Set(previous);
+      next.add(slot.id);
+      return next;
+    });
 
     try {
       await dispatch(
@@ -25,7 +28,11 @@ export default function ManageAvailabilityPage() {
         }),
       ).unwrap();
     } finally {
-      setUpdatingId(null);
+      setUpdatingIds((previous) => {
+        const next = new Set(previous);
+        next.delete(slot.id);
+        return next;
+      });
     }
   };
 
@@ -104,10 +111,10 @@ export default function ManageAvailabilityPage() {
                     <button
                       type="button"
                       onClick={() => toggleAvailability(slot)}
-                      disabled={updatingId === slot.id}
+                      disabled={updatingIds.has(slot.id)}
                       className="rounded-lg border border-white/20 px-3 py-2 text-xs font-semibold text-[var(--on-surface-muted)] transition hover:bg-white/10 disabled:opacity-60"
                     >
-                      {updatingId === slot.id
+                      {updatingIds.has(slot.id)
                         ? "Updating..."
                         : slot.isAvailable
                           ? "Mark Unavailable"

@@ -10,9 +10,13 @@ import {
   getStaff,
 } from "../../features/data/dataSelector";
 
-const defaultDate = new Date(Date.now() + 60 * 60 * 1000)
-  .toISOString()
-  .slice(0, 16);
+function getDefaultAppointmentAt() {
+  const date = new Date(Date.now() + 60 * 60 * 1000);
+  const localDate = new Date(
+    date.getTime() - date.getTimezoneOffset() * 60 * 1000,
+  );
+  return localDate.toISOString().slice(0, 16);
+}
 
 export default function BookingAppointmentPage() {
   const dispatch = useDispatch();
@@ -23,16 +27,16 @@ export default function BookingAppointmentPage() {
   const loading = useSelector(getLoading);
 
   const [error, setError] = useState("");
-  const [form, setForm] = useState({
+  const [form, setForm] = useState(() => ({
     patientId: "",
     doctorId: "",
     serviceId: "",
-    appointmentAt: defaultDate,
+    appointmentAt: getDefaultAppointmentAt(),
     mode: "in-person",
     priority: "routine",
     room: "Room 402",
     notes: "",
-  });
+  }));
 
   const effectivePatientId = Number(form.patientId || patients[0]?.id || 0);
   const effectiveDoctorId = Number(form.doctorId || staff[0]?.id || 0);

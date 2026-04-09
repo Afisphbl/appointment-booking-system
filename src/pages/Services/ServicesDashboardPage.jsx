@@ -52,8 +52,7 @@ export default function ServicesDashboardPage() {
   }, [bookings, services]);
 
   const totalRevenue = serviceMetrics.reduce(
-    (total, service) =>
-      total + service.price * Math.max(service.bookingsCount, 1),
+    (total, service) => total + service.price * service.bookingsCount,
     0,
   );
 
