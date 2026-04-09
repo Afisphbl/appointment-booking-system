@@ -1,5 +1,8 @@
 import { Lock, Mail, ShieldCheck, User } from "lucide-react";
 import { useState } from "react";
+import { useDispatch } from "react-redux";
+import { loginSuccess } from "../../features/auth/authSlice";
+import { Navigate, useNavigate } from "react-router-dom";
 
 const ROLE_CONFIG = {
   admin: {
@@ -19,6 +22,8 @@ const ROLE_CONFIG = {
 function Login() {
   const [role, setRole] = useState("admin");
   const [email, setEmail] = useState(ROLE_CONFIG.admin.email);
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
 
   function handleRoleChange(key) {
     setRole(key);
@@ -31,6 +36,19 @@ function Login() {
 
   function handleSubmit(event) {
     event.preventDefault();
+
+    const name = email.split("@")[0].replace(".", " ");
+    const roleLabel = ROLE_CONFIG[role].label;
+
+    const user = {
+      name: `${name}`,
+      title: ` ${roleLabel === "Admin" ? "Clinical Operations Lead" : `Patient / ${roleLabel}`}  `,
+      email,
+      role,
+    };
+
+    dispatch(loginSuccess(user));
+    navigate("/dashboard");
   }
 
   const cfg = ROLE_CONFIG[role];
