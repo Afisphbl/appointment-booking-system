@@ -1,0 +1,10 @@
+export const getBookings = (state) => state.data.bookings;
+export const getServices = (state) => state.data.services;
+export const getStaff = (state) => state.data.staff;
+export const getAvailability = (state) => state.data.availability;
+export const getPatients = (state) => state.data.patients;
+export const getInsights = (state) => state.data.insights;
+export const getLoading = (state) => state.data.loading;
+export const getError = (state) => state.data.error;
+export const getHasLoaded = (state) => state.data.hasLoaded;
+export const getFilters = (state) => state.data.filters;

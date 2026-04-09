@@ -6,6 +6,9 @@ import {
 import Login from "../pages/Login/Login";
 import ProtectedRoute from "../components/layout/ProtectedRoute";
 import AppShell from "../components/layout/AppShell";
+import AdminDashboardPage, {
+  loader as AdminDashboardPageLoader,
+} from "../pages/Dashboard/AdminDashboardPage";
 
 const router = createBrowserRouter([
   {
@@ -20,10 +23,14 @@ const router = createBrowserRouter([
     ),
     children: [
       {
+        index: true,
+        element: <AdminDashboardPage />,
+        loader: AdminDashboardPageLoader,
+      },
+      {
         path: "/dashboard",
-        element: (
-          <div className="p-4">Welcome to the Clinic Booking Dashboard!</div>
-        ),
+        element: <AdminDashboardPage />,
+        loader: AdminDashboardPageLoader,
       },
     ],
   },
