@@ -1,4 +1,8 @@
-import { createBrowserRouter, RouterProvider } from "react-router-dom";
+import {
+  createBrowserRouter,
+  Navigate,
+  RouterProvider,
+} from "react-router-dom";
 import Login from "../pages/Login/Login";
 import ProtectedRoute from "../components/layout/ProtectedRoute";
 import AppShell from "../components/layout/AppShell";
