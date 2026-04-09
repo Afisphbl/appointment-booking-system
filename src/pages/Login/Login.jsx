@@ -42,7 +42,10 @@ function Login() {
 
     const user = {
       name: `${name}`,
-      title: ` ${roleLabel === "Admin" ? "Clinical Operations Lead" : `Patient / ${roleLabel}`}  `,
+      title:
+        roleLabel === "Admin"
+          ? "Clinical Operations Lead"
+          : `Patient / ${roleLabel}`,
       email,
       role,
     };

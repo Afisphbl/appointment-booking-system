@@ -129,7 +129,6 @@ export default function AppShell() {
   const navigate = useNavigate();
   const location = useLocation();
   const user = useSelector(getUser);
-  console.log(user);
   // const { loading } = useSelector((state) => state.data);s
   const meta = getPageMeta(location.pathname);
 
@@ -156,7 +155,11 @@ export default function AppShell() {
             </div>
           </div>
 
-          <nav className="scroll-muted flex flex-1 flex-col gap-1 overflow-auto pr-1">
+          <nav
+            aria-label="Primary sidebar navigation"
+            className="scroll-muted flex flex-1 flex-col gap-1 overflow-auto pr-1"
+          >
+            {" "}
             {navigation.map((item) => (
               <SidebarNavItem
                 key={item.to}
@@ -227,7 +230,10 @@ export default function AppShell() {
         </div>
       </div>
 
-      <nav className="glass-panel fixed bottom-3 left-1/2 z-30 flex w-[min(94vw,560px)] -translate-x-1/2 items-center gap-1 px-2 py-1 md:hidden">
+      <nav
+        aria-label="Mobile bottom navigation"
+        className="glass-panel fixed bottom-3 left-1/2 z-30 flex w-[min(94vw,560px)] -translate-x-1/2 items-center gap-1 px-2 py-1 md:hidden"
+      >
         {mobileNavigation.map((item) => (
           <MobileNavItem
             key={item.to}
