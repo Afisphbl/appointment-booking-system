@@ -1,5 +1,7 @@
+import AppLayout from "./router/AppLayout";
+
 function App() {
-  return <div>App</div>;
+  return <AppLayout />;
 }
 
 export default App;
