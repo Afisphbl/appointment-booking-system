@@ -178,7 +178,7 @@ export async function loader() {
   const { data } = store.getState();
 
   if (!data.hasLoaded && !data.loading) {
-    await store.dispatch(fetchInitialData());
+    await store.dispatch(fetchInitialData()).unwrap();
   }
 
   return null;

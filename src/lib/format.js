@@ -36,6 +36,10 @@ export function formatCurrency(value) {
 }
 
 export function titleCase(value) {
+  if (typeof value !== "string" || value.trim() === "") {
+    return "Unknown";
+  }
+
   return value
     .split(" ")
     .map((part) => part.charAt(0).toUpperCase() + part.slice(1))

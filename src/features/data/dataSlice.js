@@ -4,11 +4,11 @@ const API_BASE = import.meta.env.VITE_BASE_URL ?? "http://localhost:3001";
 
 async function apiRequest(endpoint, options = {}) {
   const response = await fetch(`${API_BASE}/${endpoint}`, {
+    ...options,
     headers: {
       "Content-Type": "application/json",
       ...(options.headers ?? {}),
     },
-    ...options,
   });
 
   if (!response.ok) {
@@ -38,15 +38,17 @@ export const fetchInitialData = createAsyncThunk(
   "data/fetchInitialData",
   async (_, { rejectWithValue }) => {
     try {
+      const results = await Promise.allSettled([
+        apiRequest("bookings"),
+        apiRequest("services"),
+        apiRequest("staff"),
+        apiRequest("availability"),
+        apiRequest("patients"),
+        apiRequest("insights"),
+      ]);
+
       const [bookings, services, staff, availability, patients, insights] =
-        await Promise.all([
-          apiRequest("bookings"),
-          apiRequest("services"),
-          apiRequest("staff"),
-          apiRequest("availability"),
-          apiRequest("patients"),
-          apiRequest("insights"),
-        ]);
+        results.map((r) => (r.status === "fulfilled" ? r.value : []));
 
       return {
         bookings,
@@ -160,28 +162,40 @@ const dataSlice = createSlice({
       })
       .addCase(createBooking.fulfilled, (state, action) => {
         state.loading = false;
-        state.bookings.unshift(action.payload);
+        if (action.payload) {
+          state.bookings.unshift(action.payload);
+        }
       })
       .addCase(createBooking.rejected, (state, action) => {
         state.loading = false;
         state.error = action.payload || "Could not create booking";
       })
       .addCase(updateBookingStatus.fulfilled, (state, action) => {
+        const payload = action.payload;
+        const targetId = payload?.id ?? action.meta.arg?.id;
         const index = state.bookings.findIndex(
-          (booking) => booking.id === action.payload.id,
+          (booking) => booking.id === targetId,
         );
 
         if (index >= 0) {
-          state.bookings[index] = action.payload;
+          state.bookings[index] = payload ?? {
+            ...state.bookings[index],
+            status: action.meta.arg?.status,
+          };
         }
       })
       .addCase(updateAvailabilityStatus.fulfilled, (state, action) => {
+        const payload = action.payload;
+        const targetId = payload?.id ?? action.meta.arg?.id;
         const index = state.availability.findIndex(
-          (slot) => slot.id === action.payload.id,
+          (slot) => slot.id === targetId,
         );
 
         if (index >= 0) {
-          state.availability[index] = action.payload;
+          state.availability[index] = payload ?? {
+            ...state.availability[index],
+            isAvailable: action.meta.arg?.isAvailable,
+          };
         }
       })
       .addMatcher(
